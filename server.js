@@ -13,17 +13,34 @@ const app = express();
 app.use(cors());
 
 // API Routes
-app.get('/ping', (request, response) => {
-  response.send('pong');
-});
+// app.get('/ping', (request, response) => {
+//   try {
+//     response.send('pong');
+//   }
+//   catch(error) {
+//     console.error(error);
+//     response.status(500).send('Status: 500');
+//   }
+// });
+
+let errorObject = {
+  status : 500,
+  responseText : "Sorry, something went wrong",
+}
 
 // Location
 app.get('/location', (request, response) => {
 
-  // Mock DATA
-  const mockLocationData = require('./data/geo.json');
-  const location = new Location(request.query.data, mockLocationData.results[0]);
-  response.send(location);
+  try {
+    // Mock DATA
+    const mockLocationData = require('./data/geo.json');
+    const location = new Location(request.query.data, mockLocationData.results[0]);
+    response.send(location);
+  }
+  catch(error) {
+    console.error(error);
+    response.status(500).send(errorObject);
+  }
 });
 
 // Location Constructor Function
@@ -36,21 +53,28 @@ function Location(query, geoData){
 
 // Weather
 app.get('/weather', (request, response) => {
-  let weatherArray = [];
 
-  //Mock Data
-  const mockWeatherData = require('./data/darksky.json');
+  try {
+    let weatherArray = [];
 
-  for (var i = 0; i < mockWeatherData.daily.data.length; i++){
-    // ORIGINAL FUNCTION BEFORE CONSTRUCTOR
-    // let testWeather = { 
-    //   forecast : mockWeatherData.daily.data[i].summary,
-    //   time : mockWeatherData.daily.data[i].time,
-    // }
-    const testWeather = new Weather(request.query.data, mockWeatherData.daily.data[i]);
-    weatherArray.push(testWeather);
+    //Mock Data
+    const mockWeatherData = require('./data/darksky.json');
+  
+    for (var i = 0; i < mockWeatherData.daily.data.length; i++){
+      // ORIGINAL FUNCTION BEFORE CONSTRUCTOR
+      // let testWeather = { 
+      //   forecast : mockWeatherData.daily.data[i].summary,
+      //   time : mockWeatherData.daily.data[i].time,
+      // }
+      const testWeather = new Weather(request.query.data, mockWeatherData.daily.data[i]);
+      weatherArray.push(testWeather);
+    }
+    response.send(weatherArray);
   }
-  response.send(weatherArray);
+  catch(error) {
+    console.error(error);
+    response.status(500).send(errorObject);
+  }
 });
 
 // Weather Constructor Function
