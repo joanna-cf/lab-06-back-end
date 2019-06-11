@@ -22,15 +22,8 @@ app.get('/location', (request, response) => {
 
   // Mock DATA
   const mockLocationData = require('./data/geo.json');
-	
-
   const location = new Location(request.query.data, mockLocationData.results[0]);
-
-	console.log('location', location);
-	console.log('request.query.data', request.query.data)
-
   response.send(location);
-
 });
 
 // Location Constructor Function
@@ -40,6 +33,43 @@ function Location(query, geoData){
   this.latitude = geoData.geometry.location.lat;
   this.longitude = geoData.geometry.location.lng;
 }
+
+// Weather
+app.get('/weather', (request, response) => {
+  let weatherArray = [];
+  
+  //Mock Data
+  const mockWeatherData = require('./data/darksky.json');
+  // console.log('length', mockWeatherData.data.length);
+  // for (var i = 0; i < darkSkyData.data.length)
+  // const weather = new Weather(request.query.data, mockWeatherData.results[0]);
+
+  // const testWeather = 
+  for (var i = 0; i < mockWeatherData.daily.data.length; i++){
+    let testWeather = {
+      forecast : mockWeatherData.daily.data[i].summary,
+      time : mockWeatherData.daily.data[i].time,
+    }
+    weatherArray.push(testWeather);
+  }
+
+
+  // console.log('weather', weather);
+  // console.log('request query data', request.query.data);
+  response.send(weatherArray);
+
+});
+
+// Weather Constructor Function
+function Weather(query, darkSkyData){
+  this.forecast = darkSkyData.daily.data.summary;
+  this.time = darkSkyData.daily.data.time;
+}
+
+
+
+
+
 
 
 // Make sure the server is listening for requests
