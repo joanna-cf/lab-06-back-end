@@ -21,10 +21,13 @@ app.get('/ping', (request, response) => {
 app.get('/location', (request, response) => {
 
   // Mock DATA
-	const mockLocationData = require('./data/geo.json');
+  const mockLocationData = require('./data/geo.json');
 	
 
   const location = new Location(request.query.data, mockLocationData.results[0]);
+
+	console.log('location', location);
+	console.log('request.query.data', request.query.data)
 
   response.send(location);
 
@@ -32,7 +35,7 @@ app.get('/location', (request, response) => {
 
 // Location Constructor Function
 function Location(query, geoData){
-  this.query = query;
+  this.search_query = query;
   this.formatted_query = geoData.formatted_address;
   this.latitude = geoData.geometry.location.lat;
   this.longitude = geoData.geometry.location.lng;
